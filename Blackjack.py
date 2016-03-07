@@ -87,6 +87,19 @@ class Deck:
         pass	# return a string representing the deck
 
 
+#define string+list functions
+	def string_list_join(string_list):
+    ans = ""
+    for i in range(len(string_list)):
+        ans += string_list[i]
+    return ans
+    
+def index_str_list(string_list):
+    ans = ""
+    for i in range(len(string_list)):
+        ans += string_list[i]
+    return ans		
+		
 
 #define event handlers for buttons
 def deal():
