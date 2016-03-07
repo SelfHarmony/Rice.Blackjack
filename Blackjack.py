@@ -91,16 +91,11 @@ class Deck:
 	def string_list_join(string_list):
     ans = ""
     for i in range(len(string_list)):
-        ans += string_list[i]
+        ans += string_list[i] + " "
     return ans
     
-def index_str_list(string_list):
-    ans = ""
-    for i in range(len(string_list)):
-        ans += string_list[i]
-    return ans		
-		
 
+		
 #define event handlers for buttons
 def deal():
     global outcome, in_play
