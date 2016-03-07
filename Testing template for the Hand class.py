@@ -59,14 +59,9 @@ class Hand:
 def string_list_join(string_list):
     ans = ""
     for i in range(len(string_list)):
-        ans += string_list[i]
+        ans += string_list[i] + " "
     return ans
     
-def index_str_list(string_list):
-    ans = ""
-    for i in range(len(string_list)):
-        ans += string_list[i]
-    return ans
     
 ###################################################
 # Test code
