@@ -92,25 +92,42 @@ class Deck:
 
 
 #define string+list functions
-	def string_list_join(string_list):
+def string_list_join(string_list):
     ans = ""
     for i in range(len(string_list)):
         ans += string_list[i] + " "
     return ans
     
-		
+        
 
 #define event handlers for buttons
 def deal():
-    global outcome, in_play
-
-    # your code goes here
-    
+    global outcome, in_play, myhand, comphand, deck
     in_play = True
-
+    deck = Deck()
+    deck.shuffle()
+    comphand = Hand()
+    myhand = Hand()
+    
+    for i in range (2):
+        myhand.add_card(deck.deal_card())
+        comphand.add_card(deck.deal_card())
+    
+    print "ma hand" 
+    print myhand
+    print "he hand"
+    print comphand
+    print deck
+    
 def hit():
-    pass	# replace with your code below
- 
+    myhand.add_card(deck.deal_card())	# replace with your code below
+    print " "
+    print "ma hand" 
+    print myhand
+    print "he hand"
+    print comphand
+    print deck
+    print " "
     # if the hand is in play, hit the player
    
     # if busted, assign a message to outcome, update in_play and score
