@@ -16,12 +16,19 @@ card_back = simplegui.load_image("http://storage.googleapis.com/codeskulptor-ass
 in_play = False
 outcome = ""
 score = [0, 0, 0 ,0]
+covered = [0]
+cvalue = ["..."]
 
 # define globals for cards
 SUITS = ('C', 'S', 'H', 'D')
 RANKS = ('A', '2', '3', '4', '5', '6', '7', '8', '9', 'T', 'J', 'Q', 'K')
 VALUES = {'A':1, '2':2, '3':3, '4':4, '5':5, '6':6, '7':7, '8':8, '9':9, 'T':10, 'J':10, 'Q':10, 'K':10}
 
+# draw card back 
+def draw_back(canvas, pos):
+    card_loc = (CARD_CENTER[0] + CARD_SIZE[0] * 0, CARD_CENTER[1] + CARD_SIZE[1]*covered[0])
+    canvas.draw_image(card_back, card_loc, CARD_SIZE, [pos[0] + CARD_CENTER[0], pos[1] + CARD_CENTER[1]], CARD_SIZE)
+            
 
 # define card class
 class Card:
@@ -108,13 +115,20 @@ def string_list_join(string_list):
 #define event handlers for buttons
 def deal():
     global outcome, in_play, myhand, comphand, deck, bust_it
-    
+    covered[0] = 0
+    cvalue[0] = "..."
+    if in_play == True:
+        score[1]+=1
+        score[2]+=1 	
+        outcome = "You gave up this round!"
+    else:
+        outcome = "New deal! Hit or stand?"
     in_play = True
     deck = Deck()
     deck.shuffle()
     comphand = Hand()
     myhand = Hand()
-    
+
     for i in range (2):
         myhand.add_card(deck.deal_card())
         comphand.add_card(deck.deal_card())
@@ -124,11 +138,12 @@ def deal():
     print "Value: " + str(comphand.get_value())
     print "Ma hand: " + str(myhand)
     print "Value: " + str(myhand.get_value())
-    outcome = "New deal! Hit or stand?"
+
     
 def hit():
     global in_play, outcome
     if in_play == True:
+        covered[0] = 0
         myhand.add_card(deck.deal_card())
         if myhand.get_value() < 21:
             print ""
@@ -148,10 +163,12 @@ def hit():
             print "Value: " + str(myhand.get_value())
             print ""
             print "BUSTED"
-            outcome = "Busted"
+            outcome = "You are busted... New deal?"
             in_play = False
             score[1]+=1
             score[2]+=1
+            cvalue[0] = str(comphand.get_value())
+            covered[0] = 1
 
         else:
             print ""
@@ -163,6 +180,7 @@ def hit():
             #print ""
             print "LUCKY DEVIL"
             outcome = "WOW! Blackjack!"
+            
     # if the hand is in play, hit the player
    
     # if busted, assign a message to outcome, update in_play and score
@@ -170,12 +188,16 @@ def hit():
 def stand():
     global in_play, outcome
     if in_play == False:
+        cvalue[0] = str(comphand.get_value())
         if outcome == "Busted":
             print "Busted"
-            outcome = "You are busted start anew"
+            outcome = "You are busted start anew.."
+            covered[0] = 1
     else:
+        cvalue[0] = str(comphand.get_value())
         while comphand.get_value() < 17:
             comphand.add_card(deck.deal_card())
+        cvalue[0] = str(comphand.get_value())
         if comphand.get_value() > 21:
             print ""
             print "Deck: " + str(deck)
@@ -183,10 +205,11 @@ def stand():
             print "Value: " + str(comphand.get_value())
             print "Ma hand: " + str(myhand)
             print "Value: " + str(myhand.get_value())
-            outcome = "Dealer is Busted"
-            print "Enemy Busted"
+            outcome = "Dealer is Busted! YOU WON!"
+            print "Enemy Busted "
             score[0]+=1
             score[3]+=1
+            covered[0] = 1
         elif myhand.get_value() > comphand.get_value():
             print ""
             print "Deck: " + str(deck)
@@ -194,10 +217,11 @@ def stand():
             print "Value: " + str(comphand.get_value())
             print "Ma hand: " + str(myhand)
             print "Value: " + str(myhand.get_value())
-            outcome = "You are WINNER!"
+            outcome = "You are WINNER! New deal?"
             print "Yo WINNER"
             score[0]+=1
             score[3]+=1
+            covered[0] = 1
         else:
             print ""
             print "Deck: " + str(deck)
@@ -205,10 +229,11 @@ def stand():
             print "Value: " + str(comphand.get_value())
             print "Ma hand: " + str(myhand)
             print "Value: " + str(myhand.get_value())
-            outcome = "Dealer wins!"
+            outcome = "Dealer wins! New deal?"
             print "Comp wins"
             score[1]+=1
             score[2]+=1
+            covered[0] = 1
     in_play = False                # replace with your code below
    
     # if hand is in play, repeatedly hit dealer until his hand has value 17 or more
@@ -221,11 +246,12 @@ def draw(canvas):
     myhand.draw(canvas, [0, 500])
     comphand.draw(canvas, [0, 0])
     canvas.draw_text("Your hit: " + str(myhand.get_value()), [400, 410], 24, "Black")
-    canvas.draw_text(outcome, [200, 270], 24, "Black")
+    canvas.draw_text("Dealer hit: " + cvalue[0], [400, 180], 24, "Black")
+    canvas.draw_text(outcome, [170, 270], 24, "Black")
     canvas.draw_text("Wins/Losses: " + str(score[0])+"/" +str(score[1]), [400, 440], 24, "Black")
     canvas.draw_text("Wins/Losses: " + str(score[2])+"/" +str(score[3]), [400, 150], 24, "Black")
     canvas.draw_text("Blackjack v1.0", [525, 595], 12, "Black")
-    #card.draw(canvas, [100, 300])
+    draw_back(canvas, [0, 0])
 
 
 # initialization frame
